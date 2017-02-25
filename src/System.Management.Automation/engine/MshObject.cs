@@ -995,6 +995,10 @@ namespace System.Management.Automation
             }
             if (mshObj == AutomationNull.Value)
                 return null;
+
+            // For a custom PSObject instance, its 'immediateBaseObject' could be 'PSCustomObject.SelfInstance', but in that case
+            // its 'immediateBaseObjectIsEmpty' should be true. The checking of 'mshObj.immediateBaseObjectIsEmpty' in this method
+            // makes sure that 'PSCustomObject.SelfInstance' won't be returned. Instead the PSObject that wraps it will be returned.
             if (mshObj.immediateBaseObjectIsEmpty)
             {
                 return obj;

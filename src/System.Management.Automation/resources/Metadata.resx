@@ -243,4 +243,7 @@
   <data name="ValidateDrivePathNoRoot" xml:space="preserve">
     <value>The path argument has no root drive.  Supply a full path argument with a root drive.</value>
   </data>
+  <data name="ValidateTrustedDataFailure" xml:space="preserve">
+    <value>Cannot process input. The argument "{0}" is not trusted.</value>
+  </data>
 </root>

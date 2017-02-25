@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Management.Automation.Internal;
+using System.Management.Automation.Runspaces;
 
 namespace System.Management.Automation
 {
@@ -520,19 +521,9 @@ namespace System.Management.Automation
                 variable = (LocalsTuple != null ? LocalsTuple.TrySetVariable(name, value) : null) ?? new PSVariable(name, value);
             }
 
-            // Don't let people set AllScope variables in ConstrainedLanguage,
-            // as they can be used to interfere with the session state of
-            // trusted commands.
             if (ExecutionContext.HasEverUsedConstrainedLanguage)
             {
-                var context = System.Management.Automation.Runspaces.LocalPipeline.GetExecutionContextFromTLS();
-
-                if ((context != null) &&
-                    (context.LanguageMode == PSLanguageMode.ConstrainedLanguage) &&
-                    ((variable.Options & ScopedItemOptions.AllScope) == ScopedItemOptions.AllScope))
-                {
-                    throw new PSNotSupportedException();
-                }
+                CheckVariableChangeInConstrainedLanguage(variable);
             }
 
 
@@ -635,19 +626,9 @@ namespace System.Management.Automation
                 variable = newVariable;
             }
 
-            // Don't let people set AllScope variables in ConstrainedLanguage,
-            // as they can be used to interfere with the session state of
-            // trusted commands.
             if (ExecutionContext.HasEverUsedConstrainedLanguage)
             {
-                var context = System.Management.Automation.Runspaces.LocalPipeline.GetExecutionContextFromTLS();
-
-                if ((context != null) &&
-                    (context.LanguageMode == PSLanguageMode.ConstrainedLanguage) &&
-                    ((variable.Options & ScopedItemOptions.AllScope) == ScopedItemOptions.AllScope))
-                {
-                    throw new PSNotSupportedException();
-                }
+                CheckVariableChangeInConstrainedLanguage(variable);
             }
 
             _variables[variable.Name] = variable;
@@ -2132,6 +2113,24 @@ namespace System.Management.Automation
                 {
                     list.Remove(itemToRemove);
                 }
+            }
+        }
+
+        private void CheckVariableChangeInConstrainedLanguage(PSVariable variable)
+        {
+            var context = LocalPipeline.GetExecutionContextFromTLS();
+            if (context?.LanguageMode == PSLanguageMode.ConstrainedLanguage)
+            {
+                if ((variable.Options & ScopedItemOptions.AllScope) == ScopedItemOptions.AllScope)
+                {
+                    // Don't let people set AllScope variables in ConstrainedLanguage, as they can be used to
+                    // interfere with the session state of trusted commands.
+                    throw new PSNotSupportedException();
+                }
+
+                // Mark untrusted values for assignments to 'Global:' variables, and 'Script:' variables in
+                // a module scope, if it's necessary.
+                ExecutionContext.MarkObjectAsUntrustedForVariableAssignment(variable, this, context.EngineSessionState);
             }
         }
 

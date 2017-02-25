@@ -29,12 +29,14 @@ namespace Microsoft.PowerShell.Commands
 
         /// <summary> the number</summary>
         [Parameter(ParameterSetName = netSetName, Mandatory = true, Position = 0)]
+        [ValidateTrustedData]
         public string TypeName { get; set; } = null;
 
 #if !UNIX
         private Guid _comObjectClsId = Guid.Empty;
         /// <summary> the ProgID of the Com object</summary>
         [Parameter(ParameterSetName = "Com", Mandatory = true, Position = 0)]
+        [ValidateTrustedData]
         public string ComObject { get; set; } = null;
 #endif
 
@@ -43,6 +45,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         /// <value></value>
         [Parameter(ParameterSetName = netSetName, Mandatory = false, Position = 1)]
+        [ValidateTrustedData]
         [Alias("Args")]
         public object[] ArgumentList { get; set; } = null;
 
@@ -57,6 +60,7 @@ namespace Microsoft.PowerShell.Commands
         /// gets the properties to be set.
         /// </summary>
         [Parameter]
+        [ValidateTrustedData]
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public IDictionary Property { get; set; }
 

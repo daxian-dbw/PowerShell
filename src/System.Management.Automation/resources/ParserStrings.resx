@@ -918,7 +918,7 @@ The correct form is: foreach ($a in $b) {...}</value>
     <value>The method cannot be invoked.</value>
   </data>
   <data name="HashtableToObjectConversionNotSupportedInDataSection" xml:space="preserve">
-    <value>Cannot convert hashtable to an object of the following type: {0}. Hashtable-to-Object conversion is not supported in restricted language mode or a Data section.</value>
+    <value>Cannot convert hashtable to an object of the following type: {0}. Hashtable-to-Object conversion is not supported in constrained language mode, restricted language mode or a Data section.</value>
   </data>
   <data name="RequiresArgumentMustBeConstant" xml:space="preserve">
     <value>Argument must be constant.</value>

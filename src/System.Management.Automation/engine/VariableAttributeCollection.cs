@@ -147,7 +147,7 @@ namespace System.Management.Automation
                     engine = context.EngineIntrinsics;
                 }
 
-                variableValue = argumentTransformation.Transform(engine, variableValue);
+                variableValue = argumentTransformation.TransformInternal(engine, variableValue);
             }
 
             if (!PSVariable.IsValidValue(variableValue, item))

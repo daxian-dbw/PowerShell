@@ -296,6 +296,15 @@ namespace System.Management.Automation
         internal static IEnumerable<CommandParameterInternal> Splat(object splattedValue, IScriptExtent splatExtent)
         {
             splattedValue = PSObject.Base(splattedValue);
+
+            bool markUntrustedData = false;   
+            if (ExecutionContext.HasEverUsedConstrainedLanguage)
+            {
+                // If the value to be splatted is untrusted, then make sure sub-values held by it are
+                // also marked as untrusted.
+                markUntrustedData = ExecutionContext.IsMarkedAsUntrusted(splattedValue);
+            }
+
             IDictionary splattedTable = splattedValue as IDictionary;
             if (splattedTable != null)
             {
@@ -305,6 +314,7 @@ namespace System.Management.Automation
                     object parameterValue = de.Value;
                     string parameterText = GetParameterText(parameterName);
 
+                    if (markUntrustedData) { ExecutionContext.MarkObjectAsUntrusted(parameterValue); }
                     yield return CommandParameterInternal.CreateParameterWithArgument(
                         splatExtent, parameterName, parameterText,
                         splatExtent, parameterValue, false);
@@ -317,6 +327,7 @@ namespace System.Management.Automation
                 {
                     foreach (object obj in enumerableValue)
                     {
+                        if (markUntrustedData) { ExecutionContext.MarkObjectAsUntrusted(obj); }
                         yield return SplatEnumerableElement(obj, splatExtent);
                     }
                 }

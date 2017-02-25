@@ -159,6 +159,10 @@ namespace System.Management.Automation.Language
             typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.PropagateExceptionsToEnclosingStatementBlock), instanceFlags);
         internal static readonly MethodInfo ExecutionContext_IsStrictVersion =
             typeof(ExecutionContext).GetMethod(nameof(ExecutionContext.IsStrictVersion), staticFlags);
+        internal static readonly MethodInfo ExecutionContext_IsMarkedAsUntrusted = 
+            typeof(ExecutionContext).GetMethod(nameof(ExecutionContext.IsMarkedAsUntrusted), staticFlags);
+        internal static readonly MethodInfo ExecutionContext_MarkObjectAsUntrusted = 
+            typeof(ExecutionContext).GetMethod(nameof(ExecutionContext.MarkObjectAsUntrusted), staticFlags);
         internal static readonly PropertyInfo ExecutionContext_QuestionMarkVariableValue =
             typeof(ExecutionContext).GetProperty(nameof(ExecutionContext.QuestionMarkVariableValue), instanceFlags);
         internal static readonly PropertyInfo ExecutionContext_LanguageMode =
@@ -516,8 +520,8 @@ namespace System.Management.Automation.Language
         internal static readonly MethodInfo ClassOps_CallVoidMethodNonVirtually =
             typeof(ClassOps).GetMethod(nameof(ClassOps.CallVoidMethodNonVirtually), staticPublicFlags);
 
-        internal static readonly MethodInfo ArgumentTransformationAttribute_Transform =
-            typeof(ArgumentTransformationAttribute).GetMethod(nameof(ArgumentTransformationAttribute.Transform), instancePublicFlags);
+        internal static readonly MethodInfo ArgumentTransformationAttribute_TransformInternal =
+            typeof(ArgumentTransformationAttribute).GetMethod(nameof(ArgumentTransformationAttribute.TransformInternal), instanceFlags);
         // ReSharper restore InconsistentNaming
     }
 

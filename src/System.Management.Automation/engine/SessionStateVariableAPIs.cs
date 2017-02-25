@@ -373,7 +373,6 @@ namespace System.Management.Automation
 
                 context.Drive = drive;
 
-#if true
                 // PSVariable get/set is the get/set of content in the provider
 
                 Collection<IContentReader> readers = null;
@@ -513,42 +512,6 @@ namespace System.Management.Automation
                     reader.Close();
                 }
 
-#else
-                    try
-                    {
-                        GetItem(variablePath.LookupPath.ToString(), context);
-                    }
-                    catch (ItemNotFoundException)
-                    {
-                        break;
-                    }
-
-                    Collection<PSObject> items = context.GetAccumulatedObjects ();
-
-                    if (items != null &&
-                        items.Count > 0)
-                    {
-                        result = items[0];
-
-                        if (!items[0].basObjectIsEmpty)
-                        {
-                            result = items[0].BaseObject;
-                        }
-
-                        try
-                        {
-                            DictionaryEntry entry = (DictionaryEntry)result;
-                            result = entry.Value;
-                        }
-                            // Since DictionaryEntry is a value type we have to
-                            // try the cast and catch the exception to determine
-                            // if it is a DictionaryEntry type.
-                        catch (InvalidCastException)
-                        {
-                        }
-                    }
-
-#endif
                 break;
             } while (false);
 
@@ -792,7 +755,6 @@ namespace System.Management.Automation
                     CmdletProviderContext context = new CmdletProviderContext(this.ExecutionContext);
                     context.Drive = drive;
 
-#if true
                     // PSVariable get/set is the get/set of content in the provider
 
                     Collection<IContentReader> readers = null;
@@ -933,27 +895,6 @@ namespace System.Management.Automation
                     {
                         reader.Close();
                     }
-#else
-                        GetItem (variablePath.LookupPath.ToString (), context);
-
-                        Collection<PSObject> results = context.GetAccumulatedObjects ();
-
-                        if (results != null &
-                            results.Count > 0)
-                        {
-                            // Only return the first value. If the caller wants globbing
-                            // they need to call the GetItem method directly.
-
-                            if (!results[0].basObjectIsEmpty)
-                            {
-                                resultItem = results[0].BaseObject;
-                            }
-                            else
-                            {
-                                resultItem = results[0];
-                            }
-                        }
-#endif
                 }
             }
 
@@ -1121,8 +1062,8 @@ namespace System.Management.Automation
         /// </param>
         ///
         /// <returns>
-        /// A PSVariable object if <paramref name="variablePath"/> refers to a variable.
-        /// An PSObject if <paramref name="variablePath"/> refers to a provider path.
+        /// A PSVariable object if <paramref name="variable"/> refers to a variable.
+        /// An PSObject if <paramref name="variable"/> refers to a provider path.
         /// </returns>
         ///
         /// <exception cref="ArgumentNullException">
@@ -1322,7 +1263,7 @@ namespace System.Management.Automation
                 // There is probably a more efficient way to do this.
 
                 GetVariableValue(variablePath, out context, out scope);
-#if true
+
                 // PSVariable get/set is the get/set of content in the provider
 
                 Collection<IContentWriter> writers = null;
@@ -1473,26 +1414,6 @@ namespace System.Management.Automation
                 {
                     writer.Close();
                 }
-#else
-                    if (context != null)
-                    {
-                        context.Force = force;
-                        SetItem (variablePath.LookupPath.ToString (), newValue, context);
-
-                        context.ThrowFirstErrorOrDoNothing(true);
-                    }
-                    else
-                    {
-                        Collection<PSObject> setItemResult =
-                            SetItem (variablePath.LookupPath.ToString (), newValue);
-
-                        if (setItemResult != null &&
-                            setItemResult.Count > 0)
-                        {
-                            result = setItemResult[0];
-                        }
-                    }
-#endif
             }
             return result;
         } // SetVariable

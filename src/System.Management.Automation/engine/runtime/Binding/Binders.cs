@@ -487,6 +487,29 @@ namespace System.Management.Automation.Language
 
             return additionalBindingRestrictions;
         }
+
+        internal static Expression TrackInputSourceIfHasEverUsedConstrainedLanguage(ParameterExpression inputVar, ParameterExpression outputVar)
+        {
+            Diagnostics.Assert(ExecutionContext.HasEverUsedConstrainedLanguage == true, "this method should be used only if we have ever been in ConstrainedLanguage.");
+
+            var context = Expression.Variable(typeof(ExecutionContext));
+            var langModeFromContext = Expression.Property(context, CachedReflectionInfo.ExecutionContext_LanguageMode);
+            var fullLanguageMode = Expression.Constant(PSLanguageMode.FullLanguage);
+
+            // Mark the output object if needed
+            Expression body = Expression.IfThen(
+                                  Expression.AndAlso(
+                                      Expression.AndAlso(
+                                          Expression.NotEqual(context, ExpressionCache.NullExecutionContext),
+                                          Expression.Equal(langModeFromContext, fullLanguageMode)),
+                                      Expression.Call(CachedReflectionInfo.ExecutionContext_IsMarkedAsUntrusted, inputVar)),
+                                  Expression.Call(CachedReflectionInfo.ExecutionContext_MarkObjectAsUntrusted, outputVar));
+            
+            // Make sure we still return the output object.
+            return Expression.Block(new[] {context},
+                                    Expression.Assign(context, ExpressionCache.GetExecutionContextFromTLS),
+                                    body, outputVar);
+        }
     }
 
     #region PowerShell non-standard language binders
@@ -5832,22 +5855,52 @@ namespace System.Management.Automation.Language
             {
                 return originalExpression;
             }
+
+            List<ParameterExpression> variables = new List<ParameterExpression>();
+            List<Expression> body = new List<Expression>();
             Expression transformedExpression = originalExpression.Convert(typeof(object));
+            
+            ParameterExpression inputTempVar = null, outputTempVar = null;
             var engineIntrinsicsTempVar = Expression.Variable(typeof(EngineIntrinsics));
+            
+            variables.Add(engineIntrinsicsTempVar);
+            body.Add(Expression.Assign(
+                        engineIntrinsicsTempVar,
+                        Expression.Property(ExpressionCache.GetExecutionContextFromTLS,
+                                            CachedReflectionInfo.ExecutionContext_EngineIntrinsics)));
+            
+            if (ExecutionContext.HasEverUsedConstrainedLanguage)
+            {
+                inputTempVar = Expression.Variable(typeof(object));
+                variables.Add(inputTempVar);
+                body.Add(Expression.Assign(inputTempVar, transformedExpression));
+                transformedExpression = inputTempVar;
+            }
+
             // apply transformation attributes from right to left
             for (int i = attributesArray.Length - 1; i >= 0; i--)
             {
-                transformedExpression = Expression.Call(Expression.Constant(attributesArray[i]),
-                                                CachedReflectionInfo.ArgumentTransformationAttribute_Transform,
+                transformedExpression = Expression.Call(Expression.Constant(attributesArray[i], typeof(ArgumentTransformationAttribute)),
+                                                CachedReflectionInfo.ArgumentTransformationAttribute_TransformInternal,
                                                 engineIntrinsicsTempVar,
-                                                transformedExpression);
+                                                transformedExpression,
+                                                ExpressionCache.FalseConstant);
             }
-            return Expression.Block(new[] { engineIntrinsicsTempVar },
-                Expression.Assign(
-                    engineIntrinsicsTempVar,
-                    Expression.Property(ExpressionCache.GetExecutionContextFromTLS,
-                                        CachedReflectionInfo.ExecutionContext_EngineIntrinsics)),
-                transformedExpression);
+            
+            if (ExecutionContext.HasEverUsedConstrainedLanguage)
+            {
+                // If we has been in ConstrainedLanguage mode, track the flow of untrusted object in conversion
+                outputTempVar = Expression.Variable(typeof(object));
+                variables.Add(outputTempVar);
+                body.Add(Expression.Assign(outputTempVar, transformedExpression));
+                body.Add(BinderUtils.TrackInputSourceIfHasEverUsedConstrainedLanguage(inputTempVar, outputTempVar));
+            }
+            else
+            {
+                body.Add(transformedExpression);
+            }
+
+            return Expression.Block(variables, body);
         }
 
         public override DynamicMetaObject FallbackSetMember(DynamicMetaObject target, DynamicMetaObject value, DynamicMetaObject errorSuggestion)
@@ -7264,10 +7317,13 @@ namespace System.Management.Automation.Language
                 return new DynamicMetaObject(Expression.New(instanceType).Cast(this.ReturnType), restrictions).WriteToDebugLog(this);
             }
 
-            var context = LocalPipeline.GetExecutionContextFromTLS();
-            if (context != null && context.LanguageMode == PSLanguageMode.ConstrainedLanguage && !CoreTypes.Contains(instanceType))
+            if (ExecutionContext.HasEverUsedConstrainedLanguage)
             {
-                return target.ThrowRuntimeError(restrictions, "CannotCreateTypeConstrainedLanguage", ParserStrings.CannotCreateTypeConstrainedLanguage).WriteToDebugLog(this);
+                var context = LocalPipeline.GetExecutionContextFromTLS();
+                if (context != null && context.LanguageMode == PSLanguageMode.ConstrainedLanguage && !CoreTypes.Contains(instanceType))
+                {
+                    return target.ThrowRuntimeError(restrictions, "CannotCreateTypeConstrainedLanguage", ParserStrings.CannotCreateTypeConstrainedLanguage).WriteToDebugLog(this);
+                }
             }
 
             restrictions = args.Aggregate(restrictions, (current, arg) => current.Merge(arg.PSGetMethodArgumentRestriction()));

@@ -103,6 +103,7 @@ namespace Microsoft.PowerShell.Commands
         /// is allowed.
         /// </summary>
         [Parameter]
+        [ValidateTrustedData]
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays", Justification = "Cmdlets use arrays for parameters.")]
         public string[] SupportedCommand
         {
@@ -208,11 +209,20 @@ namespace Microsoft.PowerShell.Commands
                     if (variable == null)
                     {
                         variable = new PSVariable(variablePath.UnqualifiedPath, result, ScopedItemOptions.None);
+                        // Marking untrusted values for global variables in 'ConstrainedLanguage' environment
+                        // is done in SessionStateScope.SetVariable.
                         Context.EngineSessionState.SetVariable(variablePath, variable, false, CommandOrigin.Internal);
                     }
                     else
                     {
                         variable.Value = result;
+
+                        if (Context.LanguageMode == PSLanguageMode.ConstrainedLanguage)
+                        {
+                            // Mark untrusted values for assignments to 'Global:' variables, and 'Script:' variables in
+                            // a module scope, if it's necessary.
+                            ExecutionContext.MarkObjectAsUntrustedForVariableAssignment(variable, scope, Context.EngineSessionState);
+                        }
                     }
                 } // end _bindingvariable != null
 

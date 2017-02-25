@@ -36,6 +36,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         [Parameter(Position = 0, Mandatory = true,
                    ParameterSetName = StartJobCommand.DefinitionNameParameterSet)]
+        [ValidateTrustedData]
         [ValidateNotNullOrEmpty]
         public string DefinitionName
         {
@@ -107,6 +108,7 @@ namespace Microsoft.PowerShell.Commands
         [Parameter(Position = 0,
                    Mandatory = true,
                    ParameterSetName = StartJobCommand.ComputerNameParameterSet)]
+        [ValidateTrustedData]
         [Alias("Command")]
         public override ScriptBlock ScriptBlock
         {
@@ -285,6 +287,7 @@ namespace Microsoft.PowerShell.Commands
             Position = 0,
             Mandatory = true,
             ParameterSetName = StartJobCommand.FilePathComputerNameParameterSet)]
+        [ValidateTrustedData]
         public override string FilePath
         {
             get
@@ -303,6 +306,7 @@ namespace Microsoft.PowerShell.Commands
         [Parameter(
             Mandatory = true,
             ParameterSetName = StartJobCommand.LiteralFilePathComputerNameParameterSet)]
+        [ValidateTrustedData]
         [Alias("PSPath")]
         public string LiteralPath
         {
@@ -434,6 +438,7 @@ namespace Microsoft.PowerShell.Commands
                    ParameterSetName = StartJobCommand.ComputerNameParameterSet)]
         [Parameter(Position = 1,
                    ParameterSetName = StartJobCommand.LiteralFilePathComputerNameParameterSet)]
+        [ValidateTrustedData]
         public virtual ScriptBlock InitializationScript
         {
             get { return _initScript; }
@@ -486,6 +491,7 @@ namespace Microsoft.PowerShell.Commands
                    ParameterSetName = StartJobCommand.ComputerNameParameterSet)]
         [Parameter(ValueFromPipeline = true,
                    ParameterSetName = StartJobCommand.LiteralFilePathComputerNameParameterSet)]
+        [ValidateTrustedData]
         public override PSObject InputObject
         {
             get { return base.InputObject; }
@@ -498,6 +504,7 @@ namespace Microsoft.PowerShell.Commands
         [Parameter(ParameterSetName = StartJobCommand.FilePathComputerNameParameterSet)]
         [Parameter(ParameterSetName = StartJobCommand.ComputerNameParameterSet)]
         [Parameter(ParameterSetName = StartJobCommand.LiteralFilePathComputerNameParameterSet)]
+        [ValidateTrustedData]
         [Alias("Args")]
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public override Object[] ArgumentList
@@ -538,7 +545,7 @@ namespace Microsoft.PowerShell.Commands
         /// </summary>
         protected override void CreateHelpersForSpecifiedComputerNames()
         {
-            // If we're in ConstrainedLanguage mode and the system is in lockdown mode,
+            // If we're in ConstrainedLanguage mode and the system is not in lockdown mode,
             // ensure that they haven't specified a ScriptBlock or InitScript - as
             // we can't protect that boundary
             if ((Context.LanguageMode == PSLanguageMode.ConstrainedLanguage) &&
