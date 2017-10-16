@@ -108,6 +108,11 @@ function Test-StartJob { Start-Job -ScriptBlock $args[0] }
     AfterAll {
         ## Clean up the powershell object
         $ps.Dispose()
+
+        ## Set the LanguageMode to force rebuilding the type conversion cache.
+        ## This is needed because type conversions happen in the new powershell runspace with 'ConstrainedLanguage' mode
+        ## will be put in the type conversion cache, and that may affect the default session.
+        $ExecutionContext.SessionState.LanguageMode = "FullLanguage"
     }
 
     It "verify the initial state of the test module 'UntrustedDataModeTest'" {
