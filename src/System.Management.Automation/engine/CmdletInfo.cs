@@ -69,7 +69,7 @@ namespace System.Management.Automation
             _PSSnapin = PSSnapin;
             _options = ScopedItemOptions.ReadOnly;
 
-            // CmdletInfo represents cmdlets exposed from assemblies, and on a DeviceGuard machine
+            // CmdletInfo represents cmdlets exposed from assemblies, and on a system locked down machine
             // only trusted assemblies can be loaded. Therefore, a CmdletInfo is always trusted.
             this.DefiningLanguageMode = PSLanguageMode.FullLanguage;
         }
