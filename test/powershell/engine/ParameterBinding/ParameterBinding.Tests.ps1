@@ -560,8 +560,7 @@ Describe "Custom type conversion in parameter binding" {
             $result3 = Execute-Script -ps $ps -Script "Test-BinaryCmdlet -File fileToUse"
             $result3 | Should Be "fileToUse"
 
-            ## If the conversion involves setting properties of an instance of the target type,
-            ## then it's disallowed even for trusted cmdlets
+            ## Conversion involves setting properties of an instance of the target type is allowed in FullLanguage mode
             $hashValue = @{ FileName = "filename"; Arguments = "args" }
             $psobjValue = [PSCustomObject] $hashValue
 
