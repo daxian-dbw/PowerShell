@@ -304,6 +304,33 @@ namespace System.Management.Automation
         internal static string[] AllowedEditionValues = { "Desktop", "Core" };
 
         /// <summary>
+        /// Utility method to interpret the value of an opt-out environment variable.
+        /// e.g. POWERSHELL_TELEMETRY_OPTOUT and POWERSHELL_UPDATECHECK_OPTOUT
+        /// </summary>
+        internal static bool GetOptOutEnvironmentVariableAsBool(string name, bool defaultValue)
+        {
+            string str = Environment.GetEnvironmentVariable(name);
+            if (string.IsNullOrEmpty(str))
+            {
+                return defaultValue;
+            }
+
+            switch (str.ToLowerInvariant())
+            {
+                case "true":
+                case "1":
+                case "yes":
+                    return true;
+                case "false":
+                case "0":
+                case "no":
+                    return false;
+                default:
+                    return defaultValue;
+            }
+        }
+
+        /// <summary>
         /// Helper fn to check byte[] arg for null.
         /// </summary>
         ///<param name="arg"> arg to check </param>
@@ -456,21 +483,19 @@ namespace System.Management.Automation
             return Path.GetDirectoryName(assembly.Location);
         }
 
-        private static string[] s_productFolderDirectories;
-
-        /// <summary>
-        /// Specifies the per-user configuration settings directory in a platform agnostic manner.
-        /// </summary>
-        /// <returns>The current user's configuration settings directory.</returns>
-        internal static string GetUserConfigurationDirectory()
-        {
 #if UNIX
-            return Platform.SelectProductNameForDirectory(Platform.XDG_Type.CONFIG);
+        internal readonly static string UserConfigurationDirectory = Platform.SelectProductNameForDirectory(Platform.XDG_Type.CONFIG);
+        internal readonly static string PowerShellCacheDirectory = Platform.SelectProductNameForDirectory(Platform.XDG_Type.CACHE);
 #else
-            string basePath = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            return IO.Path.Combine(basePath, Utils.ProductNameForDirectory);
+        internal readonly static string UserConfigurationDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+            Utils.ProductNameForDirectory);
+        internal readonly static string PowerShellCacheDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            @"Microsoft\PowerShell");
 #endif
-        }
+
+        private static string[] s_productFolderDirectories;
 
         private static string[] GetProductFolderDirectories()
         {

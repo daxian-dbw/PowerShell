@@ -243,6 +243,17 @@ namespace Microsoft.PowerShell
                     // Send startup telemetry for ConsoleHost startup
                     ApplicationInsightsTelemetry.SendPSCoreStartupTelemetry("Normal");
 
+                    if (s_theConsoleHost.LoadPSReadline())
+                    {
+                        // Start a task in the background to check for the update release.
+                        _ = UpdatesNotification.CheckForUpdates();
+                        ClrFacade.StartProfileOptimization("StartupProfileData-Interactive");
+                    }
+                    else
+                    {
+                        ClrFacade.StartProfileOptimization("StartupProfileData-NonInteractive");
+                    }
+
                     exitCode = s_theConsoleHost.Run(s_cpp, false);
                 }
             }
@@ -1514,7 +1525,7 @@ namespace Microsoft.PowerShell
             // Don't load PSReadline if:
             //   * we don't think the process will be interactive, e.g. -command or -file
             //     - exception: when -noexit is specified, we will be interactive after the command/file finishes
-            //   * -noninteractive: this should be obvious, they've asked that we don't every prompt
+            //   * -noninteractive: this should be obvious, they've asked that we don't ever prompt
             //
             // Note that PSReadline doesn't support redirected stdin/stdout, but we don't check that here because
             // a future version might, and we should automatically load it at that unknown point in the future.

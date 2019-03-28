@@ -355,7 +355,6 @@ namespace System.Management.Automation
 
                         return xdgCacheDefault;
                     }
-
                     else
                     {
                         if (!Directory.Exists(Path.Combine(xdgcachehome, "powershell")))
