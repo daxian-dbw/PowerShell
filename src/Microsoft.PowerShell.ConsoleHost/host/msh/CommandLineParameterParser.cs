@@ -1015,6 +1015,11 @@ namespace Microsoft.PowerShell
             if (_showBanner && !_showHelp)
             {
                 DisplayBanner();
+
+                if (UpdatesNotification.CanNotifyUpdates)
+                {
+                    UpdatesNotification.ShowUpdateNotification(_hostUI);
+                }
             }
 
             Dbg.Assert(
