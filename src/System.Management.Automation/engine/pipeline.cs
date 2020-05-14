@@ -618,6 +618,10 @@ namespace System.Management.Automation.Internal
                             commandRequestingUpstreamCommandsToStop = stopUpstreamCommandsException.RequestingCommandProcessor;
                         }
                     }
+                    finally
+                    {
+                        commandProcessor.Dispose();
+                    }
 
                     EtwActivity.SetActivityId(commandProcessor.PipelineActivityId);
 
@@ -1298,7 +1302,6 @@ namespace System.Management.Automation.Internal
                         // pipeline failure and continue disposing cmdlets.
                         try
                         {
-                            commandProcessor.CommandRuntime.RemoveVariableListsInPipe();
                             commandProcessor.Dispose();
                         }
                         // 2005/04/13-JonN: The only vaguely plausible reason
@@ -1307,12 +1310,16 @@ namespace System.Management.Automation.Internal
                         // exemption.
                         catch (Exception e) // Catch-all OK, 3rd party callout.
                         {
+                            if (_firstTerminatingError != null)
+                            {
+                                _firstTerminatingError.Throw();
+                            }
+
                             InvocationInfo myInvocation = null;
                             if (commandProcessor.Command != null)
                                 myInvocation = commandProcessor.Command.MyInvocation;
 
-                            ProviderInvocationException pie =
-                                e as ProviderInvocationException;
+                            ProviderInvocationException pie = e as ProviderInvocationException;
                             if (pie != null)
                             {
                                 e = new CmdletProviderInvocationException(
