@@ -2823,15 +2823,16 @@ function Get-PSImplicitRemotingClientSideParameters
 
             $positionalArguments.AddRange($args)
 
-            $clientSideParameters = Get-PSImplicitRemotingClientSideParameters $PSBoundParameters ${8}
+            $clientSideParameters = Get-PSImplicitRemotingClientSideParameters $PSBoundParameters ${9}
 
-            $scriptCmd = {{ & $script:InvokeCommand `
-                            @clientSideParameters `
-                            -HideComputerName `
-                            -Session (Get-PSImplicitRemotingSession -CommandName '{0}') `
-                            -Arg ('{0}', $PSBoundParameters, $positionalArguments) `
-                            -Script {{ param($name, $boundParams, $unboundParams) & $name @boundParams @unboundParams }} `
-                         }}
+            $scriptCmd = {{
+                & $script:InvokeCommand `
+                    @clientSideParameters `
+                    -HideComputerName `
+                    -Session (Get-PSImplicitRemotingSession -CommandName '{0}') `
+                    -Arg ('{0}', $PSBoundParameters, $positionalArguments) `
+                    -Script {{ param($name, $boundParams, $unboundParams) & $name @boundParams @unboundParams }} `
+            }}
 
             $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
             $steppablePipeline.Begin($myInvocation.ExpectingInput, $ExecutionContext)
@@ -2843,6 +2844,8 @@ function Get-PSImplicitRemotingClientSideParameters
     Process {{ {6} }}
 
     End {{ {7} }}
+
+    Cleanup {{ {8} }}
 
     # .ForwardHelpTargetName {1}
     # .ForwardHelpCategory {5}
@@ -2869,7 +2872,8 @@ function Get-PSImplicitRemotingClientSideParameters
                 /* 5 */ commandMetadata.WrappedCommandType,
                 /* 6 */ ProxyCommand.GetProcess(commandMetadata),
                 /* 7 */ ProxyCommand.GetEnd(commandMetadata),
-                /* 8 */ commandMetadata.WrappedAnyCmdlet);
+                /* 8 */ ProxyCommand.GetCleanup(commandMetadata),
+                /* 9 */ commandMetadata.WrappedAnyCmdlet);
         }
 
         private static void GenerateCommandProxy(TextWriter writer, IEnumerable<CommandMetadata> listOfCommandMetadata)
