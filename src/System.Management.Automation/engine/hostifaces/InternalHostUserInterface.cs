@@ -180,7 +180,7 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
-            _externalUI.Write(value);
+            _externalUI.Write(Utils.GetOutputString(value, isHost: true, SupportsVirtualTerminal));
         }
 
         /// <summary>
@@ -210,6 +210,7 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
+            value = Utils.GetOutputString(value, isHost: true, SupportsVirtualTerminal);
             _externalUI.Write(foregroundColor, backgroundColor, value);
         }
 
