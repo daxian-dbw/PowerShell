@@ -4,7 +4,7 @@
 
 ### Engine Updates and Fixes
 
-- Change the default fallback encoding for `GetEncoding` in `Start-Transcript` to be `UTF8` without a `BOM` (#13732) (Thanks @Gimly!)
+- Change the default fallback encoding for `GetEncoding` in `Start-Transcript` to be `UTF8` without a BOM (#13732) (Thanks @Gimly!)
 
 ### General Cmdlet Updates and Fixes
 
@@ -94,7 +94,7 @@
 <li>Migrate 3rd party signing to ESRP (#14010)</li>
 <li>Fixes to release pipeline for GA release (#14034)</li>
 <li>Don't do a shallow checkout (#13992)</li>
-<li>Add validation and dependencies for <code>Ubuntu 20.04</code> distribution to packaging script (#13993)</li>
+<li>Add validation and dependencies for Ubuntu 20.04 distribution to packaging script (#13993)</li>
 <li>Add .NET install workaround for RTM (#13991)</li>
 <li>Move to ESRP signing for Windows files (#13988)</li>
 <li>Update <code>PSReadLine</code> version to <code>2.1.0</code> (#13975)</li>
@@ -112,7 +112,7 @@
 
 ### Documentation and Help Content
 
-- Fix links to `LTS` versions for Windows (#14070)
+- Fix links to LTS versions for Windows (#14070)
 - Fix `crontab` formatting in example doc (#13712) (Thanks @dgoldman-msft!)
 
 [7.2.0-preview.1]: https://github.com/PowerShell/PowerShell/compare/v7.1.0...v7.2.0-preview.1
