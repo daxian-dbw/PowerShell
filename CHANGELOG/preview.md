@@ -1,17 +1,17 @@
 # Current preview release
 
-## [7.2.0-preview.1] - 2020-11-16
+## [7.2.0-preview.1] - 2020-11-17
 
 ### Engine Updates and Fixes
 
-- Change the default fallback encoding for `GetEncoding` in `Start-Transcript` to be `UTF8` without `BOM` (#13732) (Thanks @Gimly!)
+- Change the default fallback encoding for `GetEncoding` in `Start-Transcript` to be `UTF8` without a `BOM` (#13732) (Thanks @Gimly!)
 
 ### General Cmdlet Updates and Fixes
 
 - Update `pwsh -?` output to match docs (#13748)
 - Fix `NullReferenceException` in `Test-Json` (#12942) (Thanks @iSazonov!)
 - Make `Dispose` in `TranscriptionOption` idempotent (#13839) (Thanks @krishnayalavarthi!)
-- Add additional PowerShell modules to the tracked modules list (#12183) (Thanks @SydneyhSmith!)
+- Add additional PowerShell modules to the tracked modules list (#12183)
 - Relax further `SSL` verification checks for `WSMan` on non-Windows hosts with verification available (#13786) (Thanks @jborean93!)
 - Add the `OutputTypeAttribute` to `Get-ExperimentalFeature` (#13738) (Thanks @ThomasNieto!)
 - Fix blocking wait when starting file associated with a Windows application (#13750)
@@ -40,12 +40,11 @@
 <li>Enable CA1827: Do not use <code>Count()</code> or <code>LongCount()</code> when <code>Any()</code> can be used (#13923) (Thanks @xtqqczze!)</li>
 <li>Enable or fix nullable usage in a few files (#13793, #13805, #13808, #14018, #13804) (Thanks @mkswd and @georgettica!)</li>
 <li>Enable IDE0040: Add accessibility modifiers (#13962, #13874) (Thanks @xtqqczze!)</li>
-<li>Revert changes to ComInterop (#14012) (Thanks @xtqqczze!)</li>
 <li>Make applicable private Guid fields readonly (#14000) (Thanks @xtqqczze!)</li>
 <li>Fix CA1003: Use generic event handler instances (#13937) (Thanks @xtqqczze!)</li>
 <li>Simplify delegate creation (#13578) (Thanks @xtqqczze!)</li>
 <li>Fix RCS1033: Remove redundant boolean literal (#13454) (Thanks @xtqqczze!)</li>
-<li>Fix RCS1221: Use pattern matching instead of combination of 'as' operator and null check (#13333) (Thanks @xtqqczze!)</li>
+<li>Fix RCS1221: Use pattern matching instead of combination of <code>as</code> operator and null check (#13333) (Thanks @xtqqczze!)</li>
 <li>Use <code>is not</code> syntax (#13338) (Thanks @xtqqczze!)</li>
 <li>Replace magic number with constant in PDH (#13536) (Thanks @xtqqczze!)</li>
 <li>Fix accessor order (#13538) (Thanks @xtqqczze!)</li>
@@ -61,13 +60,13 @@
 <li>Enforce code style in build (#13957) (Thanks @xtqqczze!)</li>
 <li>Enable CA1836: Prefer <code>IsEmpty</code> over <code>Count</code> when available (#13877) (Thanks @xtqqczze!)</li>
 <li>Enable CA1834: Consider using <code>StringBuilder.Append(char)</code> when applicable (#13878) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: Make field readonly (#13884, #13885, #13888, #13892, #13889, #13886, #13890, #13891, #13887, #13893, #13969, #13967, #13968, #13970, #13971, #13966) (Thanks @xtqqczze!)</li>
+<li>Fix IDE0044: Make field readonly (#13884, #13885, #13888, #13892, #13889, #13886, #13890, #13891, #13887, #13893, #13969, #13967, #13968, #13970, #13971, #13966, #14012) (Thanks @xtqqczze!)</li>
 <li>Enable IDE0048: Add required parentheses (#13896) (Thanks @xtqqczze!)</li>
 <li>Enable IDE1005: Invoke delegate with conditional access (#13911) (Thanks @xtqqczze!)</li>
 <li>Enable IDE0036: Enable the check on the order of modifiers (#13958, #13881) (Thanks @xtqqczze!)</li>
 <li>Use span-based <code>String.Concat</code> instead of <code>String.Substring</code> (#13500) (Thanks @xtqqczze!)</li>
 <li>Enable CA1050: Declare types in namespace (#13872) (Thanks @xtqqczze!)</li>
-<li>Minor fix keyword typo in csharp comment. (#13811) (Thanks @paul-cheung!)</li>
+<li>Fix minor keyword typo in C# code comment (#13811) (Thanks @paul-cheung!)</li>
 </ul>
 
 </details>
@@ -84,18 +83,18 @@
 <summary>
 
 <p>We thank the following contributors!</p>
-<p>@anamnavi, @mkswd, @xtqqczze</p>
+<p>@mkswd, @xtqqczze</p>
 
 </summary>
 
 <ul>
-<li>Bump Microsoft.NET.Test.Sdk from 16.7.1 to 16.8.0 (#14020)</li>
-<li>Bump Microsoft.CodeAnalysis.CSharp from 3.7.0 to 3.8.0 (#14075)</li>
+<li>Bump <code>Microsoft.NET.Test.Sdk</code> to <code>16.8.0</code> (#14020)</li>
+<li>Bump <code>Microsoft.CodeAnalysis.CSharp</code> to <code>3.8.0</code> (#14075)</li>
 <li>Remove workarounds for .NET 5 RTM builds (#14038)</li>
 <li>Migrate 3rd party signing to ESRP (#14010)</li>
 <li>Fixes to release pipeline for GA release (#14034)</li>
 <li>Don't do a shallow checkout (#13992)</li>
-<li>Add validation and dependencies for <code>Ubuntu 20.04</code> distribution to packaging script (#13993) (Thanks @anamnavi!)</li>
+<li>Add validation and dependencies for <code>Ubuntu 20.04</code> distribution to packaging script (#13993)</li>
 <li>Add .NET install workaround for RTM (#13991)</li>
 <li>Move to ESRP signing for Windows files (#13988)</li>
 <li>Update <code>PSReadLine</code> version to <code>2.1.0</code> (#13975)</li>
@@ -103,10 +102,9 @@
 <li>Update script to use .NET RTM feeds (#13927)</li>
 <li>Add checkout step to release build templates (#13840)</li>
 <li>Turn on <code>/features:strict</code> for all projects (#13383) (Thanks @xtqqczze!)</li>
-<li>Bump NJsonSchema from 10.2.1 to 10.2.2 (#13751)</li>
+<li>Bump <code>NJsonSchema</code> to <code>10.2.2</code> (#13722, #13751)</li>
 <li>Add flag to make Linux script publish to production repo (#13714)</li>
-<li>Bump Markdig.Signed from 0.21.1 to 0.22.0 (#13741)</li>
-<li>Bump NJsonSchema from 10.1.26 to 10.2.1 (#13722)</li>
+<li>Bump <code>Markdig.Signed</code> to <code>0.22.0</code> (#13741)</li>
 <li>Use new release script for Linux packages (#13705)</li>
 </ul>
 
