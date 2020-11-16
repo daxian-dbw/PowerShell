@@ -9,7 +9,6 @@
 ### General Cmdlet Updates and Fixes
 
 - Update `pwsh -?` output to match docs (#13748)
-- Enable the check on the order of modifiers (#13958) (Thanks @xtqqczze!)
 - Fix `NullReferenceException` in `Test-Json` (#12942) (Thanks @iSazonov!)
 - Make `Dispose` in `TranscriptionOption` idempotent (#13839) (Thanks @krishnayalavarthi!)
 - Add additional PowerShell modules to the tracked modules list (#12183) (Thanks @SydneyhSmith!)
@@ -31,76 +30,44 @@
 
 <ul>
 <li>Fix RCS1049: Simplify boolean comparison (#13994) (Thanks @xtqqczze!)</li>
-<li>Enable nullable: System.Management.Automation.Internal.IValidateSetValuesGenerator (#14018) (Thanks @xtqqczze!)</li>
-<li>Enable IDE0062: MakeLocalFunctionStatic (#14044) (Thanks @xtqqczze!)</li>
+<li>Enable IDE0062: Make local function static (#14044) (Thanks @xtqqczze!)</li>
 <li>Enable CA2207: Initialize value type static fields inline (#14068) (Thanks @xtqqczze!)</li>
-<li>Enable CA1837: Use 'Environment.ProcessId' (#14063) (Thanks @xtqqczze!)</li>
-<li>Remove unnecessary usings part 5 (#14050) (Thanks @xtqqczze!)</li>
-<li>Remove unnecessary usings part 6 (#14065) (Thanks @xtqqczze!)</li>
-<li>Remove unnecessary usings part7 (#14066) (Thanks @xtqqczze!)</li>
-<li>Remove LINQ Count method uses (#13545) (Thanks @xtqqczze!)</li>
-<li>Autofix SA1518: The code must not contain extra blank lines at the end of the file (#13574) (Thanks @xtqqczze!)</li>
-<li>Enable CA1829: Use Length/Count property instead of Count() (#13925) (Thanks @xtqqczze!)</li>
-<li>Enable CA1827: Do not use Count() or LongCount() when Any() can be used (#13923) (Thanks @xtqqczze!)</li>
-<li>Fix nullable usage on displayDescriptionData_Wide (#13805) (Thanks @mkswd!)</li>
-<li>Fix nullable usage on displayDescriptionData_Table.cs (#13808) (Thanks @mkswd!)</li>
-<li>Remove unnecessary usings part 3 (#14021) (Thanks @xtqqczze!)</li>
-<li>Remove unnecessary usings part 2 (#14017) (Thanks @xtqqczze!)</li>
-<li>Remove unnecessary usings part 1 (#14014) (Thanks @xtqqczze!)</li>
-<li>Enable IDE0040: AddAccessibilityModifiers (#13962) (Thanks @xtqqczze!)</li>
+<li>Enable CA1837: Use <code>ProcessId</code> and <code>CurrentManagedThreadId</code> from <code>System.Environment</code> (#14063) (Thanks @xtqqczze and @PatLeong!)</li>
+<li>Remove unnecessary using directives (#14014, #14017, #14021, #14050, #14065, #14066, #13863, #13860, #13861, #13814) (Thanks @xtqqczze and @ThomasNieto!)</li>
+<li>Remove unnecessary usage of LINQ <code>Count</code> method (#13545) (Thanks @xtqqczze!)</li>
+<li>Fix SA1518: The code must not contain extra blank lines at the end of the file (#13574) (Thanks @xtqqczze!)</li>
+<li>Enable CA1829: Use the <code>Length</code> or <code>Count</code> property instead of <code>Count()</code> (#13925) (Thanks @xtqqczze!)</li>
+<li>Enable CA1827: Do not use <code>Count()</code> or <code>LongCount()</code> when <code>Any()</code> can be used (#13923) (Thanks @xtqqczze!)</li>
+<li>Enable or fix nullable usage in a few files (#13793, #13805, #13808, #14018, #13804) (Thanks @mkswd and @georgettica!)</li>
+<li>Enable IDE0040: Add accessibility modifiers (#13962, #13874) (Thanks @xtqqczze!)</li>
 <li>Revert changes to ComInterop (#14012) (Thanks @xtqqczze!)</li>
 <li>Make applicable private Guid fields readonly (#14000) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 11 (#13966) (Thanks @xtqqczze!)</li>
 <li>Fix CA1003: Use generic event handler instances (#13937) (Thanks @xtqqczze!)</li>
 <li>Simplify delegate creation (#13578) (Thanks @xtqqczze!)</li>
-<li>Fix RCS1033: Remove redundant boolean literal part 1 (#13454) (Thanks @xtqqczze!)</li>
+<li>Fix RCS1033: Remove redundant boolean literal (#13454) (Thanks @xtqqczze!)</li>
 <li>Fix RCS1221: Use pattern matching instead of combination of 'as' operator and null check (#13333) (Thanks @xtqqczze!)</li>
-<li>Use <code>is not</code> syntax part 2 (#13338) (Thanks @xtqqczze!)</li>
+<li>Use <code>is not</code> syntax (#13338) (Thanks @xtqqczze!)</li>
 <li>Replace magic number with constant in PDH (#13536) (Thanks @xtqqczze!)</li>
 <li>Fix accessor order (#13538) (Thanks @xtqqczze!)</li>
 <li>Enable IDE0054: Use compound assignment (#13546) (Thanks @xtqqczze!)</li>
 <li>Fix RCS1098: Constant values should be on right side of comparisons (#13833) (Thanks @xtqqczze!)</li>
-<li>Enable CA1068: CancellationToken parameters must come last (#13867) (Thanks @xtqqczze!)</li>
-<li>Enable CA10XX rules with suggestion severity (#13870) (Thanks @xtqqczze!)</li>
-<li>Enable CA20XX rules with suggestion severity (#13928) (Thanks @xtqqczze!)</li>
-<li>Enable IDE0064: MakeStructFieldsWritable (#13945) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 12 (#13967) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 13 (#13968) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 15 (#13970) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 16 (#13971) (Thanks @xtqqczze!)</li>
-<li>Enable CA18XX rules with suggestion severity (#13924) (Thanks @xtqqczze!)</li>
+<li>Enable CA1068: <code>CancellationToken</code> parameters must come last (#13867) (Thanks @xtqqczze!)</li>
+<li>Enable CA10XX rules with suggestion severity (#13870, #13928, #13924) (Thanks @xtqqczze!)</li>
+<li>Enable IDE0064: Make struct fields writable (#13945) (Thanks @xtqqczze!)</li>
 <li>Run <code>dotnet-format</code> to improve formatting of source code (#13503) (Thanks @xtqqczze!)</li>
 <li>Enable CA1825: Avoid zero-length array allocations (#13961) (Thanks @xtqqczze!)</li>
-<li>Mark PowerShellAssemblyLoadContextInitializer with static modifier (#13874) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 14 (#13969) (Thanks @xtqqczze!)</li>
-<li>Remove unnecessary using in utils folder (#13863) (Thanks @ThomasNieto!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 1 (#13884) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 8 (#13891) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 4 (#13887) (Thanks @xtqqczze!)</li>
 <li>Add IDE analyzer rule IDs to comments (#13960) (Thanks @xtqqczze!)</li>
-<li>Fix nullable usage on authenticode (#13804) (Thanks @mkswd!)</li>
-<li>Enable CA1830: Prefer strongly-typed Append and Insert method overloads on StringBuilder (#13926) (Thanks @xtqqczze!)</li>
+<li>Enable CA1830: Prefer strongly-typed <code>Append</code> and <code>Insert</code> method overloads on <code>StringBuilder</code> (#13926) (Thanks @xtqqczze!)</li>
 <li>Enforce code style in build (#13957) (Thanks @xtqqczze!)</li>
-<li>Use Environment.CurrentManagedThreadId (#13803) (Thanks @PatLeong!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 10 (#13893) (Thanks @xtqqczze!)</li>
 <li>Enable CA1836: Prefer IsEmpty over Count when available (#13877) (Thanks @xtqqczze!)</li>
-<li>Enable CA1834: Consider using 'StringBuilder.Append(char)' when applicable (#13878) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 2 (#13885) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 5 (#13888) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 9 (#13892) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 6 (#13889) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 3 (#13886) (Thanks @xtqqczze!)</li>
-<li>Fix IDE0044: MakeFieldReadonly part 7 (#13890) (Thanks @xtqqczze!)</li>
-<li>Enable IDE0048: AddRequiredParentheses (#13896) (Thanks @xtqqczze!)</li>
-<li>Enable IDE1005: InvokeDelegateWithConditionalAccess (#13911) (Thanks @xtqqczze!)</li>
-<li>Enable IDE0036: OrderModifiers (#13881) (Thanks @xtqqczze!)</li>
-<li>Use span-based string.Concat inatead of string.Substring (#13500) (Thanks @xtqqczze!)</li>
+<li>Enable CA1834: Consider using <code>StringBuilder.Append(char)</code> when applicable (#13878) (Thanks @xtqqczze!)</li>
+<li>Fix IDE0044: Make field readonly (#13884, #13885, #13888, #13892, #13889, #13886, #13890, #13891, #13887, #13893, #13969, #13967, #13968, #13970, #13971, #13966) (Thanks @xtqqczze!)</li>
+<li>Enable IDE0048: Add required parentheses (#13896) (Thanks @xtqqczze!)</li>
+<li>Enable IDE1005: Invoke delegate with conditional access (#13911) (Thanks @xtqqczze!)</li>
+<li>Enable IDE0036: Enable the check on the order of modifiers (#13958, #13881) (Thanks @xtqqczze!)</li>
+<li>Use span-based <code>String.Concat</code> inatead of <code>String.Substring</code> (#13500) (Thanks @xtqqczze!)</li>
 <li>Enable CA1050: Declare types in namespaces (#13872) (Thanks @xtqqczze!)</li>
-<li>Remove unnecessary using in namespaces folder (#13860) (Thanks @ThomasNieto!)</li>
-<li>Remove unnecessary using in security folder (#13861) (Thanks @ThomasNieto!)</li>
 <li>Minor fix keyword typo in csharp comment. (#13811) (Thanks @paul-cheung!)</li>
-<li>Remove unnessary using (#13814) (Thanks @ThomasNieto!)</li>
-<li>Change Nullable usage (#13793) (Thanks @georgettica!)</li>
 </ul>
 
 </details>
