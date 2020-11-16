@@ -53,20 +53,20 @@
 <li>Fix RCS1098: Constant values should be on right side of comparisons (#13833) (Thanks @xtqqczze!)</li>
 <li>Enable CA1068: <code>CancellationToken</code> parameters must come last (#13867) (Thanks @xtqqczze!)</li>
 <li>Enable CA10XX rules with suggestion severity (#13870, #13928, #13924) (Thanks @xtqqczze!)</li>
-<li>Enable IDE0064: Make struct fields writable (#13945) (Thanks @xtqqczze!)</li>
+<li>Enable IDE0064: Make Struct fields writable (#13945) (Thanks @xtqqczze!)</li>
 <li>Run <code>dotnet-format</code> to improve formatting of source code (#13503) (Thanks @xtqqczze!)</li>
 <li>Enable CA1825: Avoid zero-length array allocations (#13961) (Thanks @xtqqczze!)</li>
 <li>Add IDE analyzer rule IDs to comments (#13960) (Thanks @xtqqczze!)</li>
 <li>Enable CA1830: Prefer strongly-typed <code>Append</code> and <code>Insert</code> method overloads on <code>StringBuilder</code> (#13926) (Thanks @xtqqczze!)</li>
 <li>Enforce code style in build (#13957) (Thanks @xtqqczze!)</li>
-<li>Enable CA1836: Prefer IsEmpty over Count when available (#13877) (Thanks @xtqqczze!)</li>
+<li>Enable CA1836: Prefer <code>IsEmpty</code> over <code>Count</code> when available (#13877) (Thanks @xtqqczze!)</li>
 <li>Enable CA1834: Consider using <code>StringBuilder.Append(char)</code> when applicable (#13878) (Thanks @xtqqczze!)</li>
 <li>Fix IDE0044: Make field readonly (#13884, #13885, #13888, #13892, #13889, #13886, #13890, #13891, #13887, #13893, #13969, #13967, #13968, #13970, #13971, #13966) (Thanks @xtqqczze!)</li>
 <li>Enable IDE0048: Add required parentheses (#13896) (Thanks @xtqqczze!)</li>
 <li>Enable IDE1005: Invoke delegate with conditional access (#13911) (Thanks @xtqqczze!)</li>
 <li>Enable IDE0036: Enable the check on the order of modifiers (#13958, #13881) (Thanks @xtqqczze!)</li>
-<li>Use span-based <code>String.Concat</code> inatead of <code>String.Substring</code> (#13500) (Thanks @xtqqczze!)</li>
-<li>Enable CA1050: Declare types in namespaces (#13872) (Thanks @xtqqczze!)</li>
+<li>Use span-based <code>String.Concat</code> instead of <code>String.Substring</code> (#13500) (Thanks @xtqqczze!)</li>
+<li>Enable CA1050: Declare types in namespace (#13872) (Thanks @xtqqczze!)</li>
 <li>Minor fix keyword typo in csharp comment. (#13811) (Thanks @paul-cheung!)</li>
 </ul>
 
@@ -98,15 +98,11 @@
 <li>Add validation and dependencies for <code>Ubuntu 20.04</code> distribution to packaging script (#13993) (Thanks @anamnavi!)</li>
 <li>Add .NET install workaround for RTM (#13991)</li>
 <li>Move to ESRP signing for Windows files (#13988)</li>
-<li>Bump <code>Microsoft.PowerShell.Native</code> version from <code>7.1.0-rc.2</code> to <code>7.1.0</code> (#13976)</li>
 <li>Update <code>PSReadLine</code> version to <code>2.1.0</code> (#13975)</li>
 <li>Bump .NET to version <code>5.0.100-rtm.20526.5</code> (#13920)</li>
 <li>Update script to use .NET RTM feeds (#13927)</li>
 <li>Add checkout step to release build templates (#13840)</li>
 <li>Turn on <code>/features:strict</code> for all projects (#13383) (Thanks @xtqqczze!)</li>
-<li>Bump <code>Microsoft.PowerShell.Native</code> to <code>7.1.0-rc.2</code> (#13794)</li>
-<li>Move PowerShell build to .NET 5 RC.2 (#13780)</li>
-<li>Update <code>PSReadLine</code> version to <code>2.1.0-rc1</code> (#13777)</li>
 <li>Bump NJsonSchema from 10.2.1 to 10.2.2 (#13751)</li>
 <li>Add flag to make Linux script publish to production repo (#13714)</li>
 <li>Bump Markdig.Signed from 0.21.1 to 0.22.0 (#13741)</li>
