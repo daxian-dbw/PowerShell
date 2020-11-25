@@ -1874,6 +1874,7 @@ namespace System.Management.Automation
         }
 
         internal static OutputRendering OutputRenderingSetting = OutputRendering.Ansi;
+
         internal static bool OutputIsPlainText(bool isHost, bool? supportsVirtualTerminal)
         {
             var outputRendering = OutputRendering.Ansi;
