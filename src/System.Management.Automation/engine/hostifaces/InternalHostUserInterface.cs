@@ -211,7 +211,14 @@ namespace System.Management.Automation.Internal.Host
             }
 
             value = Utils.GetOutputString(value, isHost: true, SupportsVirtualTerminal);
-            _externalUI.Write(foregroundColor, backgroundColor, value);
+            if (Utils.OutputIsPlainText(isHost: true, SupportsVirtualTerminal))
+            {
+                _externalUI.Write(value);
+            }
+            else
+            {
+                _externalUI.Write(foregroundColor, backgroundColor, value);
+            }
         }
 
         /// <summary>
@@ -258,7 +265,7 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
-            _externalUI.WriteLine(value);
+            _externalUI.WriteLine(Utils.GetOutputString(value, isHost: true, SupportsVirtualTerminal));
         }
 
         public override
@@ -275,7 +282,7 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
-            _externalUI.WriteErrorLine(value);
+            _externalUI.WriteErrorLine(Utils.GetOutputString(value, isHost: true, SupportsVirtualTerminal));
         }
 
         /// <summary>
@@ -305,7 +312,15 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
-            _externalUI.WriteLine(foregroundColor, backgroundColor, value);
+            value = Utils.GetOutputString(value, isHost: true, SupportsVirtualTerminal);
+            if (Utils.OutputIsPlainText(isHost: true, SupportsVirtualTerminal))
+            {
+                _externalUI.WriteLine(value);
+            }
+            else
+            {
+                _externalUI.WriteLine(foregroundColor, backgroundColor, value);
+            }
         }
 
         /// <summary>
@@ -447,7 +462,7 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
-            WriteDebugRecord(new DebugRecord(message));
+            WriteDebugRecord(new DebugRecord(Utils.GetOutputString(message, isHost: true, SupportsVirtualTerminal)));
         }
 
         /// <summary>
@@ -569,7 +584,7 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
-            WriteVerboseRecord(new VerboseRecord(message));
+            WriteVerboseRecord(new VerboseRecord(Utils.GetOutputString(message, isHost: true, SupportsVirtualTerminal)));
         }
 
         /// <summary>
@@ -583,7 +598,7 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
-            _externalUI.WriteVerboseLine(record.Message);
+            _externalUI.WriteVerboseLine(Utils.GetOutputString(record.Message, isHost: true, SupportsVirtualTerminal));
         }
 
         /// <summary>
@@ -626,7 +641,7 @@ namespace System.Management.Automation.Internal.Host
                 return;
             }
 
-            _externalUI.WriteWarningLine(record.Message);
+            _externalUI.WriteWarningLine(Utils.GetOutputString(record.Message, isHost: true, SupportsVirtualTerminal));
         }
 
         /// <summary>

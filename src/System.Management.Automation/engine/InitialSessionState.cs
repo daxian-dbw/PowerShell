@@ -4450,7 +4450,8 @@ end {
                 SpecialVariables.PSStyle,
                 new PSStyle(),
                 RunspaceInit.PSStyleDescription,
-                ScopedItemOptions.None),
+                ScopedItemOptions.AllScope)
+            ,
 
             // Variable which controls the encoding for piping data to a NativeCommand
             new SessionStateVariableEntry(
