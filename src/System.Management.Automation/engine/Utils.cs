@@ -1941,7 +1941,7 @@ namespace System.Management.Automation
                 PSStyle psstyle = (PSStyle)context.GetVariableValue(SpecialVariables.PSStyleVarPath);
                 if (psstyle is object)
                 {
-                    switch(formatStyle)
+                    switch (formatStyle)
                     {
                         case FormatStyle.Reset:
                             return psstyle.Reset;
