@@ -211,7 +211,7 @@ namespace System.Management.Automation.Internal.Host
             }
 
             value = Utils.GetOutputString(value, isHost: true, SupportsVirtualTerminal, Console.IsOutputRedirected);
-            if (Utils.OutputIsPlainText(isHost: true, SupportsVirtualTerminal))
+            if (Utils.ShouldOutputPlainText(isHost: true, SupportsVirtualTerminal))
             {
                 _externalUI.Write(value);
             }
@@ -313,7 +313,7 @@ namespace System.Management.Automation.Internal.Host
             }
 
             value = Utils.GetOutputString(value, isHost: true, SupportsVirtualTerminal, Console.IsOutputRedirected);
-            if (Utils.OutputIsPlainText(isHost: true, SupportsVirtualTerminal))
+            if (Utils.ShouldOutputPlainText(isHost: true, SupportsVirtualTerminal))
             {
                 _externalUI.WriteLine(value);
             }
