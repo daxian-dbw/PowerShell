@@ -114,9 +114,10 @@ stages:
       condition: succeeded()
 
     - pwsh: |
-        Import-Module $(CapUtilDir)\CAPService.psm1
+        <# Import-Module $(CapUtilDir)\CAPService.psm1
         $dataDir = Start-TraceCollection -RootDir $(CapRootDir)
-        Write-Host "##vso[task.setvariable variable=CapDataDir]$dataDir"
+        Write-Host "##vso[task.setvariable variable=CapDataDir]$dataDir" #>
+        Write-Host "SKIP CLR Trace Collection"
       displayName: 'Start CLR Trace Collection'
       condition: succeeded()
 
@@ -156,13 +157,14 @@ stages:
       condition: succeededOrFailed()
 
     - pwsh: |
-        $capDataDir = '$(CapDataDir)'
+        <# $capDataDir = '$(CapDataDir)'
         $capModuleFile = '$(CapUtilDir)\CAPService.psm1'
 
         if ((Test-Path $capModuleFile) -and (Test-Path $capDataDir)) {
             Import-Module $capModuleFile
             Stop-TraceCollection -DataDir $capDataDir -RepoRoot $pwd -IngressToken '$(CapIngressToken)'
-        }
+        } #>
+        Write-Host "SKIP CLR Trace Upload"
       displayName: 'Upload CLR Trace'
       condition: always()
 
