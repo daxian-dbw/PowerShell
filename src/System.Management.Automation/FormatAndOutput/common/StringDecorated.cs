@@ -95,18 +95,15 @@ namespace System.Management.Automation.Internal
         private const char ESC = '\x1b';
         private readonly bool _isDecorated;
         private readonly string _text;
-        private string _plaintextcontent;
-        private bool _isInitialized;
+        private string? _plaintextcontent;
 
         private string PlainText
         {
             get
             {
-                if (!_isInitialized)
+                if (_plaintextcontent == null)
                 {
                     _plaintextcontent = s_ansiRegex.Replace(_text, string.Empty);
-                    _isInitialized = true;
-
                 }
 
                 return _plaintextcontent;
@@ -124,8 +121,7 @@ namespace System.Management.Automation.Internal
         {
             _text = text;
             _isDecorated = text.Contains(ESC);
-            _isInitialized = false;
-            _plaintextcontent = string.Empty;
+            _plaintextcontent = null;
         }
 
         /// <summary>
