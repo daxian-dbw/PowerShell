@@ -7,7 +7,6 @@ using System.Management.Automation.Runspaces;
 using System.Management.Automation.Tracing;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
 using Microsoft.PowerShell.Telemetry;
 
 using Dbg = System.Management.Automation.Diagnostics;
@@ -1280,6 +1279,7 @@ namespace System.Management.Automation.Internal
                         // If Dispose throws an exception, record it as a pipeline failure and continue disposing cmdlets.
                         try
                         {
+                            commandProcessor.CommandRuntime.RemoveVariableListsInPipe();
                             commandProcessor.Dispose();
                         }
                         // The only vaguely plausible reason for a failure here is an exception in Command.Dispose.
