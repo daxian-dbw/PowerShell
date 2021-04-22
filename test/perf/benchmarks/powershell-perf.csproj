@@ -1,13 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../Test.Common.props" />
+  <Import Project="../../../Analyzers.props" />
 
   <PropertyGroup>
     <Description>PowerShell Performance Tests</Description>
     <AssemblyName>powershell-perf</AssemblyName>
     <OutputType>Exe</OutputType>
 
+    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <LangVersion>9.0</LangVersion>
+
     <NoWarn>$(NoWarn);CS8002</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
 
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -19,19 +24,26 @@
     <DelaySign>true</DelaySign>
     <AssemblyOriginatorKeyFile>../../../src/signing/visualstudiopublic.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
+
+    <Features>strict</Features>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../dotnet-tools/BenchmarkDotNet.Extensions/BenchmarkDotNet.Extensions.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(PERFLAB_TARGET_VERSION)' == ''">
+  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
     <ProjectReference Include="../../../src/Microsoft.PowerShell.SDK/Microsoft.PowerShell.SDK.csproj" />
     <ProjectReference Include="../../../src/Microsoft.PowerShell.Commands.Diagnostics/Microsoft.PowerShell.Commands.Diagnostics.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(PERFLAB_TARGET_VERSION)' != ''">
-    <PackageReference Include="Microsoft.PowerShell.SDK" Version="$(PERFLAB_TARGET_VERSION)" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.0.6" />
   </ItemGroup>
 
 </Project>
