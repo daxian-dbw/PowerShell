@@ -3781,8 +3781,6 @@ namespace System.Management.Automation
 
         internal void RemoveVariableListsInPipe()
         {
-            // Diagnostics.Assert(thisCommand is PSScriptCmdlet, "this is only done for script cmdlets");
-
             if (_outVarList != null && !OutputPipe.IgnoreOutVariableList)
             {
                 this.OutputPipe.RemoveVariableList(VariableStreamKind.Output, _outVarList);
