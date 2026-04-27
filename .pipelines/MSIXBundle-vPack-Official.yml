@@ -298,6 +298,11 @@ extends:
             Get-ChildItem -Path '$(ob_outputDirectory)\pkgs' -Recurse
           displayName: 'List Unsigned Package'
 
+        - pwsh: |
+            $signedFilesPath = '$(ob_outputDirectory)\Signed-$(Runtime)'
+            Remove-Item -Path $signedFilesPath -Recurse -Force -Verbose
+          displayName: 'Remove Signed-$(Runtime) folder'
+
     - stage: Pack_MSIXBundle_And_Sign
       displayName: 'Pack and sign MSIXBundle'
       dependsOn: [Build_MSIX_Package]
