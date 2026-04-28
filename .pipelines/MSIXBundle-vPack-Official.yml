@@ -329,11 +329,11 @@ extends:
         variables:
           ArtifactPlatform: 'windows'
           ob_outputDirectory: '$(BUILD.SOURCESDIRECTORY)\out'
-          ob_artifactBaseName: drop_pack_msixbundle
+          ob_artifactBaseName: 'drop_pack_$(Channel)'
           ob_createvpack_enabled: ${{ parameters.createVPack }}
           ob_createvpack_packagename: 'PowerShell7-$(Channel).Store.app'
           ob_createvpack_owneralias: 'dongbow'
-          ob_createvpack_description: 'VPack for the PowerShell 7 Store Application'
+          ob_createvpack_description: 'VPack for the PowerShell 7 Store Application ($(Channel))'
           ob_createvpack_targetDestinationDirectory: '$(Destination)'  ## The value is from the 'CreateVpack' task, used when pulling the generated VPack.
           ob_createvpack_propsFile: false
           ob_createvpack_provData: true
@@ -379,7 +379,7 @@ extends:
               **/*.msix
             targetPath: '$(Build.ArtifactStagingDirectory)\downloads'
           displayName: Download msix for x64
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'true'))
+          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - task: DownloadPipelineArtifact@2
           inputs:
@@ -388,7 +388,7 @@ extends:
               **/*.msix
             targetPath: '$(Build.ArtifactStagingDirectory)\downloads'
           displayName: Download msix for arm64
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'true'))
+          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         # Finds the makeappx tool on the machine.
         - pwsh: |
@@ -409,7 +409,7 @@ extends:
             Write-Host "##$vstsCommandString"
           displayName: Find makeappx tool
           retryCountOnTaskFailure: 1
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'true'))
+          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - pwsh: |
             $sourceDir = '$(Pipeline.Workspace)\releasePipeline\msix'
@@ -463,11 +463,11 @@ extends:
             Write-Host "##$vstsCommandString"
           displayName: Create MsixBundle
           retryCountOnTaskFailure: 1
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'true'))
+          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - task: onebranch.pipeline.signing@1
           displayName: Sign MsixBundle
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'true'))
+          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
           inputs:
             command: 'sign'
             signing_profile: $(MSIXProfile)
@@ -499,7 +499,7 @@ extends:
             Write-Verbose -Verbose "Uploaded Bundle:"
             Get-ChildItem -Path $(ob_outputDirectory) | Out-String -Width 200 -Stream | Write-Verbose -Verbose
           displayName: 'Stage msixbundle for VPack'
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'true'))
+          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - pwsh: |
             Write-Verbose "VPack Version: $(ob_createvpack_version)" -Verbose
@@ -509,7 +509,7 @@ extends:
             }
             $vpackFiles | Out-String -Width 200
           displayName: Debug Output Directory and Version
-          condition: and(succeededOrFailed(), eq(variables['PublishToChannel'], 'true'))
+          condition: and(succeededOrFailed(), eq(variables['PublishToChannel'], 'True'))
 
     - stage: Publish_Symbols
       displayName: 'Publish Symbols'
