@@ -355,6 +355,8 @@ extends:
             ReleaseTagVar: $(ReleaseTagVar)
             CreateJson: no
 
+        - template: /.pipelines/templates/shouldSign.yml@self
+
         - pwsh: |
             $metadataJsonPath = Join-Path $env:REPOROOT 'tools' 'metadata.json'
             $metadataObj = Get-Content $metadataJsonPath -Raw | ConvertFrom-Json
@@ -369,9 +371,6 @@ extends:
             Write-Host ("sending " + $vstsCommandString)
             Write-Host "##$vstsCommandString"
           displayName: 'Whether publish to $(Channel)'
-
-        - template: /.pipelines/templates/shouldSign.yml@self
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'true'))
 
         - task: DownloadPipelineArtifact@2
           inputs:
