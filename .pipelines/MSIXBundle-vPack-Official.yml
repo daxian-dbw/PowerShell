@@ -502,6 +502,7 @@ extends:
           condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - pwsh: |
+            Write-Verbose "VPack Name: $(ob_createvpack_packagename)" -Verbose
             Write-Verbose "VPack Version: $(ob_createvpack_version)" -Verbose
             $vpackFiles = Get-ChildItem -Path '$(ob_outputDirectory)\*' -Recurse
             if($vpackFiles.Count -eq 0) {
