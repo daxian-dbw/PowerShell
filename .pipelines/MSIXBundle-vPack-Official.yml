@@ -264,7 +264,7 @@ extends:
 
             Write-Verbose -Message "checking pwsh exists in $signedFilesPath" -Verbose
             if (-not (Test-Path $signedFilesPath\pwsh.exe)) {
-              throw "pwsh.exe not found in $signedFilesPath"
+                throw "pwsh.exe not found in $signedFilesPath"
             }
 
             Write-Verbose -Message "Restoring PSOptions from $psoptionsFilePath" -Verbose
@@ -282,13 +282,18 @@ extends:
             Write-Verbose -Verbose "Publish LTS: $publishLTS"
             Write-Verbose -Verbose "Publish Stable: $publishStable"
 
+            if (-not $publishLTS -and -not $publishStable) {
+                throw "metadata.json indicates no channels to publish to."
+            }
+
             ## Generated packages are placed in the current directory by default.
             Set-Location $repoRoot
             Start-PSPackage -Type msix -SkipReleaseChecks -WindowsRuntime $runtime -ReleaseTag $(ReleaseTagVar) -PackageBinPath $signedFilesPath -LTS:$publishLTS
 
             if ($publishLTS -and $publishStable) {
-              Write-Verbose -Verbose "Publish to both LTS and Stable channels. Building additional Stable MSIX."
-              Start-PSPackage -Type msix -SkipReleaseChecks -WindowsRuntime $runtime -ReleaseTag $(ReleaseTagVar) -PackageBinPath $signedFilesPath
+                $enabledChannels = "LTS,Stable"
+                Write-Verbose -Verbose "Publish to both LTS and Stable channels. Building additional Stable MSIX."
+                Start-PSPackage -Type msix -SkipReleaseChecks -WindowsRuntime $runtime -ReleaseTag $(ReleaseTagVar) -PackageBinPath $signedFilesPath
             }
 
             $msixPkgNameFilter = "PowerShell*.msix"
@@ -298,6 +303,16 @@ extends:
             $pkgDir = '$(ob_outputDirectory)\pkgs'
             $null = New-Item -ItemType Directory -Path $pkgDir -Force
             Copy-Item -Path $msixPkgFile -Destination $pkgDir -Force -Verbose
+
+            if (-not $enabledChannels) {
+                $enabledChannels = $publishLTS ? 'LTS' : ($publishStable ? 'Stable' : 'None')
+            }
+
+            ## Create an output variable for the enabled channels so that downstream stages can use it.
+            $vstsCommandString = "vso[task.setvariable variable=EnabledChannels;isOutput=true]$enabledChannels"
+            Write-Host ("sending " + $vstsCommandString)
+            Write-Host "##$vstsCommandString"
+          name: BuildMSIXPackage
           displayName: 'Build MSIX Package (Unsigned)'
 
         ### END OF Packaging ###
@@ -314,8 +329,13 @@ extends:
     - stage: Pack_MSIXBundle_And_Sign
       displayName: 'Pack and sign MSIXBundle'
       dependsOn: [Build_MSIX_Package]
+
+      variables:
+        EnabledChannels: $[ stageDependencies.Build_MSIX_Package.Build.outputs['x64.BuildMSIXPackage.EnabledChannels'] ]
+
       jobs:
       - job: Bundle
+        condition: contains(variables['EnabledChannels'], variables['Channel'])
         pool:
           type: windows
 
@@ -357,29 +377,6 @@ extends:
 
         - template: /.pipelines/templates/shouldSign.yml@self
 
-        - pwsh: |
-            $metadataJsonPath = Join-Path $env:REPOROOT 'tools' 'metadata.json'
-            $metadataObj = Get-Content $metadataJsonPath -Raw | ConvertFrom-Json
-            $channel = '$(Channel)'
-            $publishToChannel = if ($channel -eq 'LTS') {
-                $metadataObj.LTSRelease.PublishToChannels
-            } else {
-                $metadataObj.StableRelease.PublishToChannels
-            }
-
-            $vstsCommandString = "vso[task.setvariable variable=PublishToChannel]$publishToChannel"
-            Write-Host ("sending " + $vstsCommandString)
-            Write-Host "##$vstsCommandString"
-
-            if (-not $publishToChannel) {
-                Write-Verbose "VPack enabled (before change): $(ob_createvpack_enabled)" -Verbose
-
-                $disableVPackCommand = "vso[task.setvariable variable=ob_createvpack_enabled]false"
-                Write-Host ("sending " + $disableVPackCommand)
-                Write-Host "##$disableVPackCommand"
-            }
-          displayName: 'Whether publish to $(Channel)'
-
         - task: DownloadPipelineArtifact@2
           inputs:
             artifactName: drop_build_x64
@@ -387,7 +384,6 @@ extends:
               **/*.msix
             targetPath: '$(Build.ArtifactStagingDirectory)\downloads'
           displayName: Download msix for x64
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - task: DownloadPipelineArtifact@2
           inputs:
@@ -396,7 +392,6 @@ extends:
               **/*.msix
             targetPath: '$(Build.ArtifactStagingDirectory)\downloads'
           displayName: Download msix for arm64
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         # Finds the makeappx tool on the machine.
         - pwsh: |
@@ -417,7 +412,6 @@ extends:
             Write-Host "##$vstsCommandString"
           displayName: Find makeappx tool
           retryCountOnTaskFailure: 1
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - pwsh: |
             $sourceDir = '$(Pipeline.Workspace)\releasePipeline\msix'
@@ -471,11 +465,9 @@ extends:
             Write-Host "##$vstsCommandString"
           displayName: Create MsixBundle
           retryCountOnTaskFailure: 1
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - task: onebranch.pipeline.signing@1
           displayName: Sign MsixBundle
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
           inputs:
             command: 'sign'
             signing_profile: $(MSIXProfile)
@@ -507,17 +499,11 @@ extends:
             Write-Verbose -Verbose "Uploaded Bundle:"
             Get-ChildItem -Path $(ob_outputDirectory) | Out-String -Width 200 -Stream | Write-Verbose -Verbose
           displayName: 'Stage msixbundle for VPack'
-          condition: and(succeeded(), eq(variables['PublishToChannel'], 'True'))
 
         - pwsh: |
             Write-Verbose "VPack enabled: $(ob_createvpack_enabled)" -Verbose
             Write-Verbose "VPack Name: $(ob_createvpack_packagename)" -Verbose
             Write-Verbose "VPack Version: $(ob_createvpack_version)" -Verbose
-
-            if ('$(PublishToChannel)' -ne 'True') {
-                Write-Verbose "Nothing to publish." -Verbose
-                return
-            }
 
             $vpackFiles = Get-ChildItem -Path '$(ob_outputDirectory)\*' -Recurse
             if($vpackFiles.Count -eq 0) {
@@ -525,7 +511,6 @@ extends:
             }
             $vpackFiles | Out-String -Width 200
           displayName: Debug Output Directory and Version
-          condition: succeededOrFailed()
 
     - stage: Publish_Symbols
       displayName: 'Publish Symbols'
