@@ -335,7 +335,7 @@ extends:
 
       jobs:
       - job: Bundle
-        condition: contains(variables['EnabledChannels'], variables['Channel'])
+        condition: eq(variables['Run'], 'true')
         pool:
           type: windows
 
@@ -343,8 +343,10 @@ extends:
           matrix:
             lts:
               Channel: LTS
+              Run: $[ contains(variables['EnabledChannels'], 'LTS') ]
             stable:
               Channel: Stable
+              Run: $[ contains(variables['EnabledChannels'], 'Stable') ]
 
         variables:
           ArtifactPlatform: 'windows'
