@@ -76,6 +76,7 @@
 
     <EmbeddedResource Remove="resources\CoreMshSnapinResources.resx" />
     <EmbeddedResource Remove="resources\ErrorPackageRemoting.resx" />
+    <EmbeddedResource Include="cimSupport\cmdletization\xml\cmdlets-over-objects.xsd" LogicalName="cmdlets-over-objects.xsd" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(IsWindows)' != 'true' ">
